@@ -292,7 +292,7 @@ suite('RebaseTodoDocument Test Suite', () => {
 			const insertEdit = edits.find(e => e.newText !== '');
 			assert.ok(insertEdit, 'Should have insert edit');
 			// Insert text should include both commit and update-ref
-			assert.ok(insertEdit?.newText.includes('pick 1 Commit 1'), 'Should include commit line');
+			assert.ok(insertEdit?.newText.includes('pick 1 # Commit 1'), 'Should include commit line');
 			assert.ok(insertEdit?.newText.includes('update-ref refs/heads/feature-a'), 'Should include update-ref');
 		});
 
@@ -439,7 +439,7 @@ suite('RebaseTodoDocument Test Suite', () => {
 
 			assert.strictEqual(edits.length, 1);
 			// Oldest entry should stay 'pick' even when squash requested
-			assert.strictEqual(edits[0].newText, 'pick abc Commit 1');
+			assert.strictEqual(edits[0].newText, 'pick abc # Commit 1');
 		});
 
 		test('allows changing action for non-oldest commit', async () => {

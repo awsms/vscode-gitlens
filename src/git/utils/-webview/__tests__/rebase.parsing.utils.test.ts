@@ -114,7 +114,7 @@ suite('Rebase Parsing Utils Test Suite', () => {
 	});
 
 	suite('formatRebaseTodoEntryLine', () => {
-		test('formats commit entry correctly', () => {
+		test('formats commit entry with # prefix', () => {
 			const result = formatRebaseTodoEntryLine({
 				type: 'commit',
 				id: 'abc1234',
@@ -123,10 +123,10 @@ suite('Rebase Parsing Utils Test Suite', () => {
 				sha: 'abc1234',
 				message: 'Test commit',
 			});
-			assert.strictEqual(result, 'pick abc1234 Test commit');
+			assert.strictEqual(result, 'pick abc1234 # Test commit');
 		});
 
-		test('formats commit entry with flag correctly', () => {
+		test('formats commit entry with flag and # prefix', () => {
 			const result = formatRebaseTodoEntryLine({
 				type: 'commit',
 				id: 'abc1234',
@@ -136,7 +136,7 @@ suite('Rebase Parsing Utils Test Suite', () => {
 				message: 'Test commit',
 				flag: '-c',
 			});
-			assert.strictEqual(result, 'fixup -c abc1234 Test commit');
+			assert.strictEqual(result, 'fixup -c abc1234 # Test commit');
 		});
 
 		test('overrides action when specified', () => {
@@ -151,7 +151,7 @@ suite('Rebase Parsing Utils Test Suite', () => {
 				},
 				'pick',
 			);
-			assert.strictEqual(result, 'pick abc1234 Test commit');
+			assert.strictEqual(result, 'pick abc1234 # Test commit');
 		});
 	});
 
@@ -194,9 +194,9 @@ suite('Rebase Parsing Utils Test Suite', () => {
 			const reordered = generateReorderedContent(processed.entries, [1, 0]);
 
 			const expectedLines = [
-				'pick def5678 Second commit',
+				'pick def5678 # Second commit',
 				'update-ref refs/heads/feature-b',
-				'pick abc1234 First commit',
+				'pick abc1234 # First commit',
 				'update-ref refs/heads/feature-a',
 			];
 			assert.strictEqual(reordered, expectedLines.join('\n'));
@@ -216,8 +216,8 @@ suite('Rebase Parsing Utils Test Suite', () => {
 			const reordered = generateReorderedContent(processed.entries, [1, 0]);
 
 			const expectedLines = [
-				'pick def5678 Second commit',
-				'pick abc1234 First commit',
+				'pick def5678 # Second commit',
+				'pick abc1234 # First commit',
 				'update-ref refs/heads/feature-a',
 				'update-ref refs/heads/feature-b',
 			];
@@ -238,10 +238,10 @@ suite('Rebase Parsing Utils Test Suite', () => {
 			const reordered = generateReorderedContent(processed.entries, [2, 1, 0]);
 
 			const expectedLines = [
-				'pick ghi9012 Third (no refs)',
-				'pick def5678 Second (has ref)',
+				'pick ghi9012 # Third (no refs)',
+				'pick def5678 # Second (has ref)',
 				'update-ref refs/heads/feature-x',
-				'pick abc1234 First (no refs)',
+				'pick abc1234 # First (no refs)',
 			];
 			assert.strictEqual(reordered, expectedLines.join('\n'));
 		});

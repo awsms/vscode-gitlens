@@ -92,9 +92,7 @@ export class RebaseTodoDocument {
 				new Range(new Position(entry.line, 0), new Position(entry.line, maxSmallIntegerV8)),
 			);
 
-			// Preserve flag (e.g., fixup -c, fixup -C) if present
-			const flagPart = entry.flag ? ` ${entry.flag}` : '';
-			edit.replace(this.document.uri, range, `${action}${flagPart} ${entry.sha} ${entry.message}`);
+			edit.replace(this.document.uri, range, formatRebaseTodoEntryLine(entry, action));
 		}
 
 		// If oldest entry needs reset and wasn't in the batch, reset it
@@ -107,12 +105,7 @@ export class RebaseTodoDocument {
 						new Position(originalOldest.line, maxSmallIntegerV8),
 					),
 				);
-				const flagPart = originalOldest.flag ? ` ${originalOldest.flag}` : '';
-				edit.replace(
-					this.document.uri,
-					range,
-					`pick${flagPart} ${originalOldest.sha} ${originalOldest.message}`,
-				);
+				edit.replace(this.document.uri, range, formatRebaseTodoEntryLine(originalOldest, 'pick'));
 			}
 		}
 
@@ -133,7 +126,7 @@ export class RebaseTodoDocument {
 			new Range(new Position(oldestCommit.line, 0), new Position(oldestCommit.line, maxSmallIntegerV8)),
 		);
 		const edit = new WorkspaceEdit();
-		edit.replace(this.document.uri, range, `pick ${oldestCommit.sha} ${oldestCommit.message}`);
+		edit.replace(this.document.uri, range, formatRebaseTodoEntryLine(oldestCommit, 'pick'));
 		await workspace.applyEdit(edit);
 	}
 

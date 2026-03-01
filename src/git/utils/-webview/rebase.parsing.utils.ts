@@ -14,7 +14,7 @@ export function formatRebaseTodoEntryLine(entry: ProcessedRebaseEntry, overrideA
 	const action = overrideAction ?? entry.action;
 	if (entry.type === 'commit') {
 		const flagPart = entry.flag ? ` ${entry.flag}` : '';
-		return `${action}${flagPart} ${entry.sha} ${entry.message}`;
+		return `${action}${flagPart} ${entry.sha} # ${entry.message}`;
 	}
 
 	// Command entries (exec, break, noop)

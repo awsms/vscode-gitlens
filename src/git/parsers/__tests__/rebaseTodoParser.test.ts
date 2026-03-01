@@ -515,6 +515,30 @@ pick 3333333 Final commit`;
 		assert.strictEqual(result.info?.onto, 'abc123');
 	});
 
+	test('strips # prefix from commit messages (git 2.50+ format)', () => {
+		const content = `pick abc1234 # First commit
+pick def5678 # Second commit
+squash 9876543 # Third commit`;
+
+		const result = parseRebaseTodo(content);
+
+		assert.strictEqual(result.entries.length, 3, 'Should parse three entries');
+		assert.strictEqual(result.entries[0].message, 'First commit', 'Should strip # prefix from message');
+		assert.strictEqual(result.entries[1].message, 'Second commit', 'Should strip # prefix from message');
+		assert.strictEqual(result.entries[2].message, 'Third commit', 'Should strip # prefix from message');
+	});
+
+	test('strips # prefix from messages without space after #', () => {
+		const content = `pick abc1234 #123 Fix something
+pick def5678 #no-space`;
+
+		const result = parseRebaseTodo(content);
+
+		assert.strictEqual(result.entries.length, 2, 'Should parse two entries');
+		assert.strictEqual(result.entries[0].message, '123 Fix something', 'Should strip # without space');
+		assert.strictEqual(result.entries[1].message, 'no-space', 'Should strip # without space');
+	});
+
 	test('handles all command abbreviations', () => {
 		const content = `p abc1234 Pick
 r def5678 Reword
