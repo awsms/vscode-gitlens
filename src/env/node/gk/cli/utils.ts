@@ -4,7 +4,7 @@ import { window } from 'vscode';
 import { urls } from '../../../../constants.js';
 import { Container } from '../../../../container.js';
 import { openUrl } from '../../../../system/-webview/vscode/uris.js';
-import { maybeStartLoggableScope } from '../../../../system/logger.scope.js';
+import { maybeStartScopedLogger } from '../../../../system/logger.scope.js';
 import { joinPaths } from '../../../../system/path.js';
 import { run } from '../../git/shell.js';
 import { getPlatform } from '../../platform.js';
@@ -94,10 +94,10 @@ export function toMcpInstallProvider<T extends string | undefined>(appHostName: 
 export async function runCLICommand(args: string[], options?: { cwd?: string }): Promise<string> {
 	const cwd = options?.cwd ?? Container.instance.storage.getScoped('gk:cli:path');
 	const command = cwd == null ? undefined : joinPaths(cwd, getPlatform() === 'windows' ? 'gk.exe' : 'gk');
-	using scope = maybeStartLoggableScope(
+	using scope = maybeStartScopedLogger(
 		`${command} ${args[0] === 'auth' ? '[auth]' : args.join(' ')}`,
 		{ level: 'trace' },
-		'CLI',
+		{ scopeLabel: 'CLI' },
 	);
 
 	if (command == null) {

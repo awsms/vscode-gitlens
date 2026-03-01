@@ -6,7 +6,7 @@ import { setContext } from '../system/-webview/context.js';
 import { debug } from '../system/decorators/log.js';
 import { once } from '../system/event.js';
 import { getLoggableName } from '../system/logger.js';
-import { getScopedLogger, maybeStartLoggableScope } from '../system/logger.scope.js';
+import { getScopedLogger, maybeStartScopedLogger } from '../system/logger.scope.js';
 import type { DocumentBlameStateChangeEvent, DocumentDirtyIdleTriggerEvent } from '../trackers/documentTracker.js';
 import type { GitCodeLensProvider } from './codeLensProvider.js';
 
@@ -33,7 +33,7 @@ export class GitCodeLensController implements Disposable {
 	}
 
 	private onConfigurationChanged(e?: ConfigurationChangeEvent) {
-		using scope = maybeStartLoggableScope(`${getLoggableName(this)}.onConfigurationChanged`);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.onConfigurationChanged`);
 
 		if (configuration.changed(e, ['codeLens', 'defaultDateFormat', 'defaultDateSource', 'defaultDateStyle'])) {
 			if (e != null) {
@@ -57,7 +57,7 @@ export class GitCodeLensController implements Disposable {
 		// Only reset if we have saved, since the CodeLens won't naturally be re-rendered
 		if (this._provider == null || !e.blameable) return;
 
-		using scope = maybeStartLoggableScope(`${getLoggableName(this)}.onBlameStateChanged`);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.onBlameStateChanged`);
 
 		scope?.debug('resetting CodeLens provider');
 		this._provider.reset();
@@ -66,7 +66,7 @@ export class GitCodeLensController implements Disposable {
 	private async onDirtyIdleTriggered(e: DocumentDirtyIdleTriggerEvent) {
 		if (this._provider == null) return;
 
-		using scope = maybeStartLoggableScope(`${getLoggableName(this)}.onDirtyIdleTriggered`);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.onDirtyIdleTriggered`);
 
 		const status = await e.document.getStatus();
 		if (!status.blameable) return;

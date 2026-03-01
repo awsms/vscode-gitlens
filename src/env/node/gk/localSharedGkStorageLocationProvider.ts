@@ -8,7 +8,7 @@ import { debug } from '../../../system/decorators/log.js';
 import type { Lazy } from '../../../system/lazy.js';
 import { lazy } from '../../../system/lazy.js';
 import { getLoggableName } from '../../../system/logger.js';
-import { getScopedLogger, maybeStartLoggableScope } from '../../../system/logger.scope.js';
+import { getScopedLogger, maybeStartScopedLogger } from '../../../system/logger.scope.js';
 import { wait } from '../../../system/promise.js';
 import type { UnifiedAsyncDisposable } from '../../../system/unifiedDisposable.js';
 import { createAsyncDisposable } from '../../../system/unifiedDisposable.js';
@@ -19,7 +19,7 @@ export class LocalSharedGkStorageLocationProvider implements SharedGkStorageLoca
 
 	constructor(private readonly container: Container) {
 		this._lazySharedGKUri = lazy(async () => {
-			using scope = maybeStartLoggableScope(`${getLoggableName(this)}.load`);
+			using scope = maybeStartScopedLogger(`${getLoggableName(this)}.load`);
 
 			/** Deprecated prefer using XDG paths */
 			const legacySharedGKPath = join(homedir(), '.gk');

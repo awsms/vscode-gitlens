@@ -13,7 +13,7 @@ import { memoize } from '../../system/decorators/memoize.js';
 import { weakEvent } from '../../system/event.js';
 import { filterMap, flatMap, map, some, uniqueBy } from '../../system/iterable.js';
 import { getLoggableName } from '../../system/logger.js';
-import { maybeStartLoggableScope } from '../../system/logger.scope.js';
+import { maybeStartScopedLogger } from '../../system/logger.scope.js';
 import { basename } from '../../system/path.js';
 import { getSettledValue } from '../../system/promise.js';
 import type { FileHistoryView } from '../fileHistoryView.js';
@@ -130,7 +130,7 @@ export class FileHistoryNode
 			return;
 		}
 
-		using scope = maybeStartLoggableScope(`${getLoggableName(this)}.onRepositoryChanged(e=${e.toString()})`);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.onRepositoryChanged(e=${e.toString()})`);
 		scope?.trace('triggering node refresh');
 
 		void this.triggerChange(true);
@@ -143,7 +143,7 @@ export class FileHistoryNode
 			return;
 		}
 
-		using scope = maybeStartLoggableScope(
+		using scope = maybeStartScopedLogger(
 			`${getLoggableName(this)}.onFileSystemChanged(e=${this.uri.toString(true)})`,
 		);
 		scope?.trace('triggering node refresh');

@@ -129,6 +129,9 @@ export function getScopedLogger(): (ScopedLogger & Disposable) | undefined {
 	return wrapper;
 }
 
+/**
+ * @internal only exported for use in other logging-related modules, not for general use
+ */
 export function getNewLogScope(
 	prefix: string,
 	scope: ScopedLogger | boolean | undefined,
@@ -174,14 +177,14 @@ function startScopedLogger(
  *   - `true`: auto entry + exit with timing at debug level
  *   - `{ level?, message?, onlyExit? }`: fine-grained control
  */
-export function maybeStartLoggableScope(
+export function maybeStartScopedLogger(
 	prefix: string,
 	log?: boolean | { level?: Exclude<LogLevel, 'off' | 'error' | 'warn'>; message?: string; onlyExit?: true },
-	scopeLabel?: string,
+	options?: { scopeLabel?: string; scope?: ScopedLogger },
 ): (ScopedLogger & Disposable) | undefined {
 	if (!Logger.enabled()) return undefined;
 
-	const scope = startScopedLogger(prefix, true, scopeLabel);
+	const scope = startScopedLogger(prefix, options?.scope ?? true, options?.scopeLabel);
 
 	if (!log) return scope;
 

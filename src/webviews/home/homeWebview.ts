@@ -88,7 +88,7 @@ import type { Deferrable } from '../../system/function/debounce.js';
 import { debounce } from '../../system/function/debounce.js';
 import { filterMap } from '../../system/iterable.js';
 import { getLoggableName, Logger } from '../../system/logger.js';
-import { maybeStartLoggableScope } from '../../system/logger.scope.js';
+import { maybeStartScopedLogger } from '../../system/logger.scope.js';
 import { hasKeys } from '../../system/object.js';
 import { getSettledValue } from '../../system/promise.js';
 import { SubscriptionManager } from '../../system/subscriptionManager.js';
@@ -867,7 +867,7 @@ export class HomeWebviewProvider implements WebviewProvider<State, State, HomeWe
 		if (subscriptionResult.status === 'fulfilled') {
 			subscriptionState = subscriptionResult.value;
 		} else {
-			using scope = maybeStartLoggableScope(
+			using scope = maybeStartScopedLogger(
 				`${getLoggableName(this)}.getState(${Logger.toLoggable(subscription)})`,
 			);
 			scope?.error(subscriptionResult.reason, 'Failed to get subscription state');

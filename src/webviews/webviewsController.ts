@@ -10,7 +10,7 @@ import { addToContextDelimitedString, getContext } from '../system/-webview/cont
 import { getViewFocusCommand } from '../system/-webview/vscode/views.js';
 import { trace } from '../system/decorators/log.js';
 import { find, first, map } from '../system/iterable.js';
-import { maybeStartLoggableScope } from '../system/logger.scope.js';
+import { maybeStartScopedLogger } from '../system/logger.scope.js';
 import type { WebviewCommandRegistrar } from './webviewCommandRegistrar.js';
 import { WebviewController } from './webviewController.js';
 import type { WebviewPanelDescriptor, WebviewViewDescriptor } from './webviewDescriptors.js';
@@ -118,7 +118,7 @@ export class WebviewsController implements Disposable {
 		) => Promise<WebviewProvider<State, SerializedState, ShowingArgs>>,
 		onBeforeShow?: (...args: WebviewShowingArgs<ShowingArgs, SerializedState>) => void | Promise<void>,
 	): WebviewViewProxy<ID, ShowingArgs, SerializedState> {
-		using scope = maybeStartLoggableScope(`WebviewView(${descriptor.id})`);
+		using scope = maybeStartScopedLogger(`WebviewView(${descriptor.id})`);
 
 		const registration: WebviewViewRegistration<ID, State, SerializedState, ShowingArgs> = {
 			descriptor: descriptor,
@@ -251,7 +251,7 @@ export class WebviewsController implements Disposable {
 			host: WebviewHost<ID>,
 		) => Promise<WebviewProvider<State, SerializedState, ShowingArgs>>,
 	): WebviewPanelsProxy<ID, ShowingArgs, SerializedState> {
-		using scope = maybeStartLoggableScope(`WebviewPanel(${descriptor.id})`);
+		using scope = maybeStartScopedLogger(`WebviewPanel(${descriptor.id})`);
 
 		const registration: WebviewPanelRegistration<ID, State, SerializedState, ShowingArgs> = {
 			descriptor: descriptor,

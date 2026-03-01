@@ -33,7 +33,7 @@ import type { Deferrable } from '../system/function/debounce.js';
 import { debounce } from '../system/function/debounce.js';
 import { count, filter, first, flatMap, groupByMap, join, map, some, sum } from '../system/iterable.js';
 import { getLoggableName, Logger } from '../system/logger.js';
-import { getScopedLogger, maybeStartLoggableScope } from '../system/logger.scope.js';
+import { getScopedLogger, maybeStartScopedLogger } from '../system/logger.scope.js';
 import { getScheme, isAbsolute, maybeUri, normalizePath } from '../system/path.js';
 import type { Deferred } from '../system/promise.js';
 import { asSettled, defer, getDeferredPromiseIfPending, getSettledValue } from '../system/promise.js';
@@ -493,7 +493,7 @@ export class GitProviderService implements Disposable {
 			...disposables,
 			provider.onDidChange(() => {
 				this._etag = Date.now();
-				using scope = maybeStartLoggableScope(`${getLoggableName(provider)}.onDidChange`);
+				using scope = maybeStartScopedLogger(`${getLoggableName(provider)}.onDidChange`);
 				scope?.trace('');
 
 				const { workspaceFolders } = workspace;
@@ -503,7 +503,7 @@ export class GitProviderService implements Disposable {
 			}),
 			provider.onDidChangeRepository(async e => {
 				this._etag = Date.now();
-				using scope = maybeStartLoggableScope(
+				using scope = maybeStartScopedLogger(
 					`${getLoggableName(provider)}.onDidChangeRepository(e=${Logger.toLoggable(e.repository)})`,
 				);
 				scope?.trace('');
@@ -534,7 +534,7 @@ export class GitProviderService implements Disposable {
 			provider.onDidCloseRepository(e => {
 				this._etag = Date.now();
 				const repository = this._repositories.get(e.uri);
-				using scope = maybeStartLoggableScope(
+				using scope = maybeStartScopedLogger(
 					`${getLoggableName(provider)}.onDidCloseRepository(e=${e.uri.toString()})`,
 				);
 				scope?.trace(`repository=${Logger.toLoggable(repository)}`);
@@ -546,7 +546,7 @@ export class GitProviderService implements Disposable {
 			provider.onDidOpenRepository(e => {
 				this._etag = Date.now();
 				const repository = this._repositories.get(e.uri);
-				using scope = maybeStartLoggableScope(
+				using scope = maybeStartScopedLogger(
 					`${getLoggableName(provider)}.onDidOpenRepository(e=${e.uri.toString()})`,
 				);
 				scope?.trace(`repository=${Logger.toLoggable(repository)}`);

@@ -4,7 +4,7 @@ import { getScopedCounter } from '../../../system/counter.js';
 import { debug, logName } from '../../../system/decorators/log.js';
 import { deserializeIpcData } from '../../../system/ipcSerialize.js';
 import { Logger } from '../../../system/logger.js';
-import { getNewLogScope, getScopedLogger } from '../../../system/logger.scope.js';
+import { getScopedLogger, maybeStartScopedLogger } from '../../../system/logger.scope.js';
 import type { Serialized } from '../../../system/serialize.js';
 import { maybeStopWatch } from '../../../system/stopwatch.js';
 import type {
@@ -61,10 +61,11 @@ export class HostIpc implements Disposable {
 
 	@debug({ args: e => ({ e: `${e.data.id}|${e.data.method}` }) })
 	private onMessageReceived(e: MessageEvent) {
-		const scope = getScopedLogger();
-
 		const msg = e.data as IpcMessage;
-		const sw = maybeStopWatch(getNewLogScope(`(e=${msg.id}|${msg.method})`, scope), {
+		using scope = maybeStartScopedLogger(`(e=${msg.id}|${msg.method})`, undefined, {
+			scope: getScopedLogger(),
+		});
+		const sw = maybeStopWatch(scope, {
 			log: { onlyExit: true, level: 'debug' },
 		});
 

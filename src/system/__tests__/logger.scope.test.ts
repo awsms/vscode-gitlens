@@ -7,7 +7,7 @@ import {
 	getLoggableScopeBlock,
 	getNewLogScope,
 	getScopedLogger,
-	maybeStartLoggableScope,
+	maybeStartScopedLogger,
 	runInScope,
 } from '../logger.scope.js';
 
@@ -282,7 +282,7 @@ suite('LogScope Test Suite', () => {
 			assert.strictEqual(getScopedLogger(), undefined);
 
 			{
-				using scope = maybeStartLoggableScope('Test.method');
+				using scope = maybeStartScopedLogger('Test.method');
 				assert.strictEqual(getScopedLogger()?.scopeId, scope!.scopeId);
 			}
 
@@ -292,7 +292,7 @@ suite('LogScope Test Suite', () => {
 
 		test('should maintain scope across await with using keyword', async () => {
 			async function asyncMethod() {
-				using scope = maybeStartLoggableScope('Async.method');
+				using scope = maybeStartScopedLogger('Async.method');
 				const scopeId = scope!.scopeId;
 
 				assert.strictEqual(getScopedLogger()?.scopeId, scopeId);
@@ -316,7 +316,7 @@ suite('LogScope Test Suite', () => {
 
 		test('should handle nested maybeStartLoggableScope correctly', async () => {
 			async function outerMethod() {
-				using outerScope = maybeStartLoggableScope('Outer.method');
+				using outerScope = maybeStartScopedLogger('Outer.method');
 				const outerId = outerScope!.scopeId;
 
 				assert.strictEqual(getScopedLogger()?.scopeId, outerId);
@@ -324,7 +324,7 @@ suite('LogScope Test Suite', () => {
 				await delay(5);
 
 				{
-					using innerScope = maybeStartLoggableScope('Inner.method');
+					using innerScope = maybeStartScopedLogger('Inner.method');
 					const innerId = innerScope!.scopeId;
 
 					assert.strictEqual(getScopedLogger()?.scopeId, innerId);
@@ -353,7 +353,7 @@ suite('LogScope Test Suite', () => {
 			const capturedScopes: Array<{ phase: string; scopeId: number | undefined }> = [];
 
 			async function methodA() {
-				using scope = maybeStartLoggableScope('MethodA');
+				using scope = maybeStartScopedLogger('MethodA');
 				const scopeId = scope!.scopeId;
 				capturedScopes.push({ phase: 'A-start', scopeId: getScopedLogger()?.scopeId });
 				await delay(20);
@@ -364,7 +364,7 @@ suite('LogScope Test Suite', () => {
 			}
 
 			async function methodB() {
-				using scope = maybeStartLoggableScope('MethodB');
+				using scope = maybeStartScopedLogger('MethodB');
 				const scopeId = scope!.scopeId;
 				capturedScopes.push({ phase: 'B-start', scopeId: getScopedLogger()?.scopeId });
 				await delay(10);

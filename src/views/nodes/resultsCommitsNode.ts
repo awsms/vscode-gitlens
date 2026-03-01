@@ -10,7 +10,7 @@ import { configuration } from '../../system/-webview/configuration.js';
 import { trace } from '../../system/decorators/log.js';
 import { map } from '../../system/iterable.js';
 import { getLoggableName } from '../../system/logger.js';
-import { getNewLogScope } from '../../system/logger.scope.js';
+import { maybeStartScopedLogger } from '../../system/logger.scope.js';
 import type { Deferred } from '../../system/promise.js';
 import { defer, pauseOnCancelOrTimeout } from '../../system/promise.js';
 import type { ViewsWithCommits } from '../viewBase.js';
@@ -184,7 +184,7 @@ export class ResultsCommitsNodeBase<Type extends TreeViewNodeTypes, View extends
 						: TreeItemCollapsibleState.Collapsed;
 			} else {
 				queueMicrotask(async () => {
-					const scope = getNewLogScope(`${getLoggableName(this)}.getTreeItem`, true);
+					using scope = maybeStartScopedLogger(`${getLoggableName(this)}.getTreeItem`);
 					try {
 						if (this._onChildrenCompleted?.promise != null) {
 							const timeout = new Promise<void>(resolve => {

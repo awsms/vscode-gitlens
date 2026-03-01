@@ -11,7 +11,7 @@ import type { Container, Environment } from '../../container.js';
 import { CancellationError } from '../../errors.js';
 import { trace } from '../../system/decorators/log.js';
 import { getLoggableName, Logger } from '../../system/logger.js';
-import { getScopedLogger, maybeStartLoggableScope } from '../../system/logger.scope.js';
+import { getScopedLogger, maybeStartScopedLogger } from '../../system/logger.scope.js';
 import { AuthenticationConnection } from './authenticationConnection.js';
 import type { ServerConnection } from './serverConnection.js';
 
@@ -205,7 +205,7 @@ export class AccountAuthenticationProvider implements AuthenticationProvider, Di
 	}
 
 	private async checkForUpdates() {
-		using scope = maybeStartLoggableScope(`${getLoggableName(this)}.checkForUpdates`);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.checkForUpdates`);
 
 		const previousSessions = await this._sessionsPromise;
 		this._sessionsPromise = this.getSessionsFromStorage();
@@ -259,7 +259,7 @@ export class AccountAuthenticationProvider implements AuthenticationProvider, Di
 	}
 
 	private async getSessionsFromStorage(): Promise<AuthenticationSession[]> {
-		using scope = maybeStartLoggableScope(`${getLoggableName(this)}.getSessionsFromStorage`);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.getSessionsFromStorage`);
 
 		let storedSessions: StoredSession[];
 

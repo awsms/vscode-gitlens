@@ -20,7 +20,7 @@ import type { Deferrable } from '../../system/function/debounce.js';
 import { debounce } from '../../system/function/debounce.js';
 import { filter, groupByMap, join, map, min, some } from '../../system/iterable.js';
 import { getLoggableName, Logger } from '../../system/logger.js';
-import { getScopedLogger, maybeStartLoggableScope } from '../../system/logger.scope.js';
+import { getScopedLogger, maybeStartScopedLogger } from '../../system/logger.scope.js';
 import { updateRecordValue } from '../../system/object.js';
 import { basename, normalizePath } from '../../system/path.js';
 import { CheckoutError, FetchError, PullError, PushError } from '../errors.js';
@@ -241,7 +241,7 @@ export class Repository implements Disposable {
 		const changed = this._closed !== value;
 		this._closed = value;
 		if (changed) {
-			using scope = maybeStartLoggableScope(`${getLoggableName(this)}.closed`);
+			using scope = maybeStartScopedLogger(`${getLoggableName(this)}.closed`);
 			scope?.trace(`setting closed=${value}`);
 			this.setupRepoWatchers(this._gitDir);
 
@@ -995,7 +995,7 @@ export class Repository implements Disposable {
 	}
 
 	private fireChangeCore() {
-		using scope = maybeStartLoggableScope(`${getLoggableName(this)}.fireChangeCore`);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.fireChangeCore`);
 
 		const e = this._pendingRepoChange;
 		if (e == null) {
@@ -1039,7 +1039,7 @@ export class Repository implements Disposable {
 	}
 
 	private fireFileSystemChangeCore() {
-		using scope = maybeStartLoggableScope(`${getLoggableName(this)}.fireFileSystemChangeCore`);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.fireFileSystemChangeCore`);
 
 		const e = this._pendingFileSystemChange;
 		if (e == null) {

@@ -5,7 +5,7 @@ import { access, constants } from 'fs';
 import { stat } from 'fs/promises';
 import { join as joinPaths } from 'path';
 import * as process from 'process';
-import { getScopedLogger, maybeStartLoggableScope } from '../../../system/logger.scope.js';
+import { getScopedLogger, maybeStartScopedLogger } from '../../../system/logger.scope.js';
 import { normalizePath } from '../../../system/path.js';
 import { CancelledRunError, RunError } from './shell.errors.js';
 
@@ -179,7 +179,7 @@ export function run<T extends number | string>(
 	encoding: BufferEncoding | string,
 	options?: RunOptions<BufferEncoding> & { exitCodeOnly?: boolean },
 ): Promise<T> {
-	const scope = getScopedLogger() ?? maybeStartLoggableScope('Shell.run');
+	const scope = getScopedLogger() ?? maybeStartScopedLogger('Shell.run');
 
 	const { stdin, stdinEncoding, ...opts }: RunOptions<BufferEncoding> & ExecFileOptions = {
 		maxBuffer: 1000 * 1024 * 1024,
@@ -277,7 +277,7 @@ export function runSpawn<T extends string | Buffer>(
 	encoding: BufferEncoding | 'buffer' | string,
 	options: RunOptions & { exitCodeOnly?: boolean },
 ): Promise<RunExitResult | RunResult<T>> {
-	const scope = getScopedLogger() ?? maybeStartLoggableScope('Shell.runSpawn');
+	const scope = getScopedLogger() ?? maybeStartScopedLogger('Shell.runSpawn');
 
 	const { stdin, stdinEncoding, ...opts }: RunOptions = options;
 

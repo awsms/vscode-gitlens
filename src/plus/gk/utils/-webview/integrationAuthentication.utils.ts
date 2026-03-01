@@ -3,7 +3,7 @@ import { wrapForForcedInsecureSSL } from '@env/fetch.js';
 import type { IntegrationIds } from '../../../../constants.integrations.js';
 import type { Container } from '../../../../container.js';
 import { sequentialize } from '../../../../system/function.js';
-import { getScopedLogger, maybeStartLoggableScope } from '../../../../system/logger.scope.js';
+import { getScopedLogger, maybeStartScopedLogger } from '../../../../system/logger.scope.js';
 import type { IntegrationAuthenticationSessionDescriptor } from '../../../integrations/authentication/integrationAuthenticationProvider.js';
 import type { ProviderAuthenticationSession } from '../../../integrations/authentication/models.js';
 
@@ -24,7 +24,7 @@ export const getBuiltInIntegrationSession = sequentialize(
 			async () => {
 				if (failedAuthProviderIds.has(id)) return undefined;
 
-				using scope = getScopedLogger() ?? maybeStartLoggableScope(`getBuiltInIntegrationSession(${id})`);
+				using scope = getScopedLogger() ?? maybeStartScopedLogger(`getBuiltInIntegrationSession(${id})`);
 
 				if (id === 'github') {
 					const extension = extensions.getExtension('vscode.github-authentication');

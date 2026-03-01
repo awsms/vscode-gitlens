@@ -8,7 +8,7 @@ import { once } from '../system/function.js';
 import { first } from '../system/iterable.js';
 import { lazy } from '../system/lazy.js';
 import { getLoggableName } from '../system/logger.js';
-import { maybeStartLoggableScope } from '../system/logger.scope.js';
+import { maybeStartScopedLogger } from '../system/logger.scope.js';
 import type { Deferred } from '../system/promise.js';
 import { defer, isPromise } from '../system/promise.js';
 import { BranchesView } from './branchesView.js';
@@ -238,7 +238,7 @@ export class ScmGroupedView implements Disposable {
 								return emptyTreeItem;
 							}
 
-							using scope = maybeStartLoggableScope(
+							using scope = maybeStartScopedLogger(
 								`${getLoggableName(this)}.ensureGroupedContext.getTreeItem`,
 							);
 
@@ -273,7 +273,7 @@ export class ScmGroupedView implements Disposable {
 								return emptyArray;
 							}
 
-							using scope = maybeStartLoggableScope(
+							using scope = maybeStartScopedLogger(
 								`${getLoggableName(this)}.ensureGroupedContext.getChildren`,
 							);
 
@@ -303,7 +303,7 @@ export class ScmGroupedView implements Disposable {
 						resolveTreeItem: (item, node, token) => {
 							if (this._view == null) return item;
 
-							using scope = maybeStartLoggableScope(
+							using scope = maybeStartScopedLogger(
 								`${getLoggableName(this)}.ensureGroupedContext.resolveTreeItem`,
 							);
 

@@ -35,7 +35,7 @@ import { logName, trace } from '../system/decorators/log.js';
 import { sequentialize } from '../system/decorators/sequentialize.js';
 import { serializeIpcData } from '../system/ipcSerialize.js';
 import { getLoggableName } from '../system/logger.js';
-import { getNewLogScope, getScopedLogger } from '../system/logger.scope.js';
+import { getScopedLogger, maybeStartScopedLogger } from '../system/logger.scope.js';
 import { pauseOnCancelOrTimeout } from '../system/promise.js';
 import { maybeStopWatch, Stopwatch } from '../system/stopwatch.js';
 import type { WebviewContext } from '../system/webview.js';
@@ -727,7 +727,7 @@ export class WebviewController<
 		const id = this.nextIpcId();
 		const timestamp = Date.now();
 
-		const scope = getNewLogScope(`${getLoggableName(this)}.notify(${id}|${notificationType.method})`, true);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.notify(${id}|${notificationType.method})`);
 		const sw = maybeStopWatch(scope, { log: { onlyExit: true, level: 'debug' } });
 
 		const serializedParams = params != null ? this.serializeIpcData(params) : undefined;

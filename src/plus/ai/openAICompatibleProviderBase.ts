@@ -7,7 +7,7 @@ import type { AIProviders } from '../../constants.ai.js';
 import type { Container } from '../../container.js';
 import { AIError, AIErrorReason, CancellationError, isCancellationError } from '../../errors.js';
 import { getLoggableName } from '../../system/logger.js';
-import { maybeStartLoggableScope } from '../../system/logger.scope.js';
+import { maybeStartScopedLogger } from '../../system/logger.scope.js';
 import type { ServerConnection } from '../gk/serverConnection.js';
 import type { AIActionType, AIModel, AIProviderDescriptor } from './models/model.js';
 import type { AIChatMessage, AIChatMessageRole, AIProvider, AIProviderResponse } from './models/provider.js';
@@ -93,7 +93,7 @@ export abstract class OpenAICompatibleProviderBase<T extends AIProviders> implem
 		getMessages: (maxInputTokens: number, retries: number) => Promise<AIChatMessage[]>,
 		options: { cancellation: CancellationToken; modelOptions?: { outputTokens?: number; temperature?: number } },
 	): Promise<AIProviderResponse<void> | undefined> {
-		using scope = maybeStartLoggableScope(`${getLoggableName(this)}.sendRequest`);
+		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.sendRequest`);
 
 		try {
 			const result = await this.fetch(

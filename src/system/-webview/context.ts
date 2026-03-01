@@ -1,6 +1,6 @@
 import { EventEmitter } from 'vscode';
 import type { ContextKeys } from '../../constants.context.js';
-import { maybeStartLoggableScope } from '../logger.scope.js';
+import { maybeStartScopedLogger } from '../logger.scope.js';
 import { executeCoreCommand } from './command.js';
 
 const contextStorage = new Map<keyof ContextKeys, unknown>();
@@ -21,7 +21,7 @@ export async function setContext<T extends keyof ContextKeys>(
 	key: T,
 	value: ContextKeys[T] | undefined,
 ): Promise<void> {
-	using scope = maybeStartLoggableScope(
+	using scope = maybeStartScopedLogger(
 		`Context.setContext(${key}, ${value == null || typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string' ? value : `<value:${typeof value}>`})`,
 		{ level: 'trace', onlyExit: true },
 	);
